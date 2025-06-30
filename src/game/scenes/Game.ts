@@ -1,35 +1,89 @@
 import { Scene } from 'phaser';
+import Frog from '../models/Frog';
+import { FrogTypes } from '../FrogTypes';
 
-export class Game extends Scene
-{
-    camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    msg_text : Phaser.GameObjects.Text;
+export class Game extends Scene {
+    camera!: Phaser.Cameras.Scene2D.Camera;
+    background!: Phaser.GameObjects.Image;
+    frogs: Frog[] = [];
+    statsText!: Phaser.GameObjects.Text;
 
-    constructor ()
-    {
+    private spawnTimer = 0;
+    private spawnInterval = 3000;
+
+    private mostAdvancedType: keyof typeof FrogTypes = 'Water';
+
+    private static readonly CENTER_X = 512;
+    private static readonly CENTER_Y = 410;
+    private static readonly RADIUS_X = 400;
+    private static readonly RADIUS_Y = 200;
+
+    constructor() {
         super('Game');
     }
 
-    create ()
-    {
+    create() {
+        this.frogs = [];
+        this.spawnTimer = 0;
+
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
+        this.background = this.add.image(512, 384, 'bg');
 
-        this.background = this.add.image(512, 384, 'background');
-        this.background.setAlpha(0.5);
-
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
+        this.statsText = this.add.text(20, 20, '', {
+            fontSize: '20px',
+            color: '#ffffff',
+            fontFamily: 'Arial'
         });
-        this.msg_text.setOrigin(0.5);
 
-        this.input.once('pointerdown', () => {
+        this.events.on("frogMerged", this.onFrogMerged, this);
+        this.spawnFrog();
+    }
 
+    update(_: number, delta: number) {
+        this.frogs.forEach(f => f.update(delta));
+        this.spawnTimer += delta;
+
+        if (this.spawnTimer > this.spawnInterval) {
+            this.spawnFrog();
+            this.spawnTimer = 0;
+            this.spawnInterval = Math.max(500, 3000 - this.frogs.length * 50);
+        }
+
+        if (this.frogs.length > 30) {
             this.scene.start('GameOver');
+        }
 
-        });
+        this.updateStats();
+    }
+
+    private spawnFrog() {
+        const { x, y } = this.getRandomPositionInEllipse();
+        const frog = new Frog(this, x, y, 'Water');
+        this.frogs.push(frog);
+    }
+
+    private getRandomPositionInEllipse(): { x: number, y: number } {
+        let x, y;
+        do {
+            x = Game.CENTER_X + (Math.random() - 0.5) * 2 * Game.RADIUS_X;
+            y = Game.CENTER_Y + (Math.random() - 0.5) * 2 * Game.RADIUS_Y;
+
+            const dx = x - Game.CENTER_X;
+            const dy = y - Game.CENTER_Y;
+            const norm = (dx * dx) / (Game.RADIUS_X * Game.RADIUS_X) + (dy * dy) / (Game.RADIUS_Y * Game.RADIUS_Y);
+            if (norm <= 1) break;
+        } while (true);
+        return { x, y };
+    }
+
+    private onFrogMerged(newType: keyof typeof FrogTypes) {
+        const order = Object.keys(FrogTypes);
+        if (order.indexOf(newType) > order.indexOf(this.mostAdvancedType)) {
+            this.mostAdvancedType = newType;
+        }
+    }
+
+    private updateStats() {
+        this.statsText.setText(`Frogs: ${this.frogs.length}\nCurrent Type: ${this.mostAdvancedType}`);
     }
 }
