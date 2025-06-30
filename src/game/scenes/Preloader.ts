@@ -33,10 +33,30 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('logo', 'logo.png');
-        this.load.image('ultimate', 'frog_sit.png');
-        this.load.image('ultimate_carry', 'frog_carry.png');
+
+        this.load.image('flower', 'flower_sit.png');
+        this.load.image('flower_carry', 'flower_carry.png');
+
         this.load.image('water', 'water_sit.png');
         this.load.image('water_carry', 'water_carry.png');
+
+        this.load.image('cloud', 'cloud_sit.png');
+        this.load.image('cloud_carry', 'cloud_carry.png');
+
+        this.load.image('prince', 'prince_sit.png');
+        this.load.image('prince_carry', 'prince_carry.png');
+
+        this.load.image('wizard', 'wizard_sit.png');
+        this.load.image('wizard_carry', 'wizard_carry.png');
+
+        this.load.image('astronaut', 'astronaut_sit.png');
+        this.load.image('astronaut_carry', 'astronaut_carry.png');
+
+        this.load.image('universe', 'universe_sit.png');
+        this.load.image('universe_carry', 'universe_carry.png');
+
+        this.load.image('ultimate', 'frog_sit.png');
+        this.load.image('ultimate_carry', 'frog_carry.png');
         this.load.image('bg', 'bg.png')
         this.load.image('dust', 'dust.png')
     }

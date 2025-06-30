@@ -46,7 +46,7 @@ export class Game extends Scene {
         if (this.spawnTimer > this.spawnInterval) {
             this.spawnFrog();
             this.spawnTimer = 0;
-            this.spawnInterval = Math.max(500, 3000 - this.frogs.length * 50);
+            this.spawnInterval = Math.min(1000, this.frogs.length * 50);
         }
 
         if (this.frogs.length > 30) {
@@ -58,7 +58,7 @@ export class Game extends Scene {
 
     private spawnFrog() {
         const { x, y } = this.getRandomPositionInEllipse();
-        const frog = new Frog(this, x, y, 'Water');
+        const frog = new Frog(this, x, y, 'Flower');
         this.frogs.push(frog);
     }
 

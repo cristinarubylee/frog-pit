@@ -1,5 +1,10 @@
 export const FrogTypes = {
-    Water: 'Ultimate',
-    Ultimate: 'GodFrog',
-    GodFrog: 'GodFrog'
+    Flower: 'Water',
+    Water: 'Cloud',
+    Cloud: 'Prince',
+    Prince: 'Wizard',
+    Wizard: 'Astronaut',
+    Astronaut: 'Universe',
+    Universe: 'Ultimate',
+    Ultimate: 'Ultimate'
 } as const;
